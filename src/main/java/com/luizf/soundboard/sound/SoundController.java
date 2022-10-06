@@ -3,6 +3,7 @@ package com.luizf.soundboard.sound;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,6 +20,11 @@ public class SoundController {
     @PostMapping("/save")
    public ResponseEntity save(@RequestBody Sound sound, @RequestParam Long playlist_id) {
         return ResponseEntity.status(HttpStatus.CREATED).body(soundService.save(sound, playlist_id));
+   }
+
+   @PostMapping("/uploadFile")
+   public void uploadFile(@RequestParam("file") MultipartFile file) {
+        soundService.uploadFile(file);
    }
 
    @GetMapping("/getSounds/{playlist_id}")
