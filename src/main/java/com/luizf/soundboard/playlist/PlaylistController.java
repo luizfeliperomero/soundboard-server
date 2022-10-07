@@ -16,7 +16,6 @@ public class PlaylistController {
 
     @PostMapping("/save")
     public Playlist save(@RequestBody Playlist playlist, @RequestParam Long user_id) {
-        System.out.println(playlist.toString());
        return playlistService.save(playlist, user_id);
     }
 
