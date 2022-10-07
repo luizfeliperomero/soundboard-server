@@ -5,6 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
@@ -25,6 +28,13 @@ public class SoundController {
    @PostMapping("/uploadFile")
    public void uploadFile(@RequestParam("file") MultipartFile file) {
         soundService.uploadFile(file);
+   }
+
+   @GetMapping("/getAudio/{name}")
+   public byte[] getAudio(@PathVariable String name) throws IOException {
+        String path = "C:\\Users\\Pichau\\Desktop\\luizf-rpg-soundboard\\soundboard\\src\\main\\resources\\sounds\\" +name;
+        byte[] bytes = Files.readAllBytes(Paths.get(path));
+        return bytes;
    }
 
    @GetMapping("/getSounds/{playlist_id}")
