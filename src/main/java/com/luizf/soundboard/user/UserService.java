@@ -1,9 +1,9 @@
 package com.luizf.soundboard.user;
 
-import com.luizf.soundboard.exception.UserNotFound;
+import com.luizf.soundboard.exception.user_exceptions.UserUnauthorized;
+import com.luizf.soundboard.exception.user_exceptions.UserNotFound;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -15,6 +15,9 @@ public class UserService {
    }
 
    public User save(User user) {
+      if(userRepository.findUserByName(user.getName()).isPresent()) {
+         throw new UserUnauthorized("Username " +user.getName()+ " already exists");
+      }
       return this.userRepository.save(user);
    }
 
@@ -26,7 +29,7 @@ public class UserService {
      User u =  findByName(user.getName()).orElseThrow(() -> new UserNotFound("User not found"));
      if(u.getPassword().equals(user.getPassword())){
         return u;
-     } else throw new UserNotFound("Wrong Password");
+     } else throw new UserUnauthorized("Wrong Password");
    }
 
 }
