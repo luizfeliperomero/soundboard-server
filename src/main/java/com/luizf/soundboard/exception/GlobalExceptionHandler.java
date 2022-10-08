@@ -1,5 +1,7 @@
 package com.luizf.soundboard.exception;
 
+import com.luizf.soundboard.exception.playlist_exceptions.PlaylistNotFound;
+import com.luizf.soundboard.exception.sound_exceptions.SoundNotFound;
 import com.luizf.soundboard.exception.user_exceptions.UserUnauthorized;
 import com.luizf.soundboard.exception.user_exceptions.UserNotFound;
 import org.springframework.http.HttpStatus;
@@ -20,5 +22,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({UserUnauthorized.class})
     public ResponseEntity<Object> userUnauthorized(UserUnauthorized ex) {
         return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, ex.getMessage(), LocalDateTime.now()), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler({PlaylistNotFound.class})
+    public ResponseEntity<Object> playlistNotFound(PlaylistNotFound ex) {
+        return new ResponseEntity<>(new ApiError(HttpStatus.NOT_FOUND, ex.getMessage(), LocalDateTime.now()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({SoundNotFound.class})
+    public ResponseEntity<Object> soundNotFound(PlaylistNotFound ex) {
+        return new ResponseEntity<>(new ApiError(HttpStatus.NOT_FOUND, ex.getMessage(), LocalDateTime.now()), HttpStatus.NOT_FOUND);
     }
 }

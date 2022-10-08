@@ -43,4 +43,9 @@ public class SoundController {
    public List<Sound> getPlaylistSounds(@PathVariable Long playlist_id) {
        return soundService.getPlaylistSounds(playlist_id);
    }
+
+   @DeleteMapping("/delete")
+   public void delete(@RequestBody Sound sound) {
+       soundService.delete(sound);
+   }
 }

@@ -23,4 +23,15 @@ public class PlaylistController {
     public ResponseEntity findUserPlaylists(@PathVariable Long user_id) {
         return ResponseEntity.ok(playlistService.findUserPlaylists(user_id));
     }
+
+    @PutMapping("/update")
+    public ResponseEntity update(@RequestBody Playlist playlist) {
+       return ResponseEntity.ok(playlistService.update(playlist));
+    }
+
+    @DeleteMapping("/delete")
+    public void delete(@RequestBody Playlist playlist) {
+        playlistService.delete(playlist);
+    }
+
 }

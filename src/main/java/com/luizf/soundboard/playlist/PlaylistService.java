@@ -1,5 +1,6 @@
 package com.luizf.soundboard.playlist;
 
+import com.luizf.soundboard.exception.playlist_exceptions.PlaylistNotFound;
 import com.luizf.soundboard.user.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +23,20 @@ public class PlaylistService {
 
       return p;
     }
-
     public List<Playlist> findUserPlaylists(Long user_id) {
        return playlistRepository.getUserPlaylists(user_id);
+    }
+
+    public Playlist update(Playlist playlist) {
+        Optional<Playlist> playlistOpt = playlistRepository.findById(playlist.getId());
+        return playlistOpt.map(p -> {
+            p.setName(playlist.getName());
+            p.setDescription(playlist.getDescription());
+            return playlistRepository.save(p);
+        }).orElseThrow( ()  -> new PlaylistNotFound("Playlist with id " +playlist.getId()+ " not found"));
+    }
+
+    public void delete(Playlist playlist) {
+        playlistRepository.delete(playlist);
     }
 }
