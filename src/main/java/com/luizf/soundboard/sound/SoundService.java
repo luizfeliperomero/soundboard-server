@@ -32,7 +32,8 @@ public class SoundService {
     }
 
     public void uploadFile(MultipartFile file) {
-        String soundsPath = "src" + File.separator + "main" + File.separator +  "resources" + File.separator + "sounds";
+        //String soundsPath = "src" + File.separator + "main" + File.separator +  "resources" + File.separator + "sounds";
+        String soundsPath = "C:\\Users\\Pichau\\Desktop\\luizf-rpg-soundboard\\soundboard\\src\\main\\resources\\sounds\\";
         try {
         file.transferTo(new File(soundsPath + File.separator + file.getOriginalFilename()));
         } catch (IOException e) {
