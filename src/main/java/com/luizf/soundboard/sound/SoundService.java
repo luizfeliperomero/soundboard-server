@@ -11,6 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,14 +36,16 @@ public class SoundService {
         Sound sound = new Sound();
         String soundsPath = "E:\\Projects\\soundboard-server\\src\\main\\resources\\sounds";
         try {
-            String hashName = String.valueOf(file.getBytes().toString().hashCode());
             sound.setName(file.getOriginalFilename().split("\\.")[0]);
+            String hashName = bytesToSha1(file.getBytes());
             sound.setUrl("http://192.168.1.101:8080/api/v1/sound/getAudio/" +hashName);
             file.transferTo(new File(soundsPath + File.separator + hashName));
             Sound s = soundRepository.save(sound);
             soundRepository.savePlaylistSound(playlist_id, sound.getId());
             return s;
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
@@ -56,4 +61,15 @@ public class SoundService {
     public void delete(Sound sound) {
        soundRepository.delete(sound);
     }
+
+    public String bytesToSha1(byte[] bytes) throws NoSuchAlgorithmException {
+        MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
+        BigInteger no = new BigInteger(sha1.digest(bytes));
+        String hash = no.toString(16);
+        while (hash.length() < 32) {
+            hash = "0" + hash;
+        }
+        return hash;
+    }
+
 }
