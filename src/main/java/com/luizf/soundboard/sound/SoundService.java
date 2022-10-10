@@ -5,6 +5,8 @@ import com.luizf.soundboard.exception.sound_exceptions.SoundNotFound;
 import com.luizf.soundboard.playlist.Playlist;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.DigestUtils;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -20,22 +22,24 @@ public class SoundService {
         this.soundRepository = soundRepository;
     }
 
-    @Transactional
-    public Sound save(Sound sound, Long playlist_id) {
-        Sound s = soundRepository.save(sound);
-        soundRepository.savePlaylistSound(playlist_id, sound.getId());
-        return s;
-    }
-
     public List<Sound> getPlaylistSounds(Long id) {
        return soundRepository.getPlaylistSounds(id);
     }
 
-    public void uploadFile(MultipartFile file) {
+
+    @Transactional
+    public Sound uploadFile(MultipartFile file, Long playlist_id) {
         //String soundsPath = "src" + File.separator + "main" + File.separator +  "resources" + File.separator + "sounds";
-        String soundsPath = "C:\\Users\\Pichau\\Desktop\\luizf-rpg-soundboard\\soundboard\\src\\main\\resources\\sounds\\";
+        Sound sound = new Sound();
+        String soundsPath = "E:\\Projects\\soundboard-server\\src\\main\\resources\\sounds";
         try {
-        file.transferTo(new File(soundsPath + File.separator + file.getOriginalFilename()));
+            String hashName = String.valueOf(file.getBytes().toString().hashCode());
+            sound.setName(file.getOriginalFilename().split("\\.")[0]);
+            sound.setUrl("http://192.168.1.101:8080/api/v1/sound/getAudio/" +hashName);
+            file.transferTo(new File(soundsPath + File.separator + hashName));
+            Sound s = soundRepository.save(sound);
+            soundRepository.savePlaylistSound(playlist_id, sound.getId());
+            return s;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.plaf.multi.MultiListUI;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,15 +22,6 @@ public class SoundController {
         this.soundService = soundService;
     }
 
-    @PostMapping("/save")
-   public ResponseEntity save(@RequestBody Sound sound, @RequestParam Long playlist_id) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(soundService.save(sound, playlist_id));
-   }
-
-   @PostMapping("/uploadFile")
-   public void uploadFile(@RequestParam("file") MultipartFile file) {
-        soundService.uploadFile(file);
-   }
 
    @GetMapping("/getAudio/{name}")
    public byte[] getAudio(@PathVariable String name) throws IOException {
@@ -38,6 +30,11 @@ public class SoundController {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         return bytes;
    }
+
+    @PostMapping("/uploadFile")
+    public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file, @RequestParam String playlist_id ) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(soundService.uploadFile(file, Long.parseLong(playlist_id)));
+    }
 
    @GetMapping("/getSounds/{playlist_id}")
    public List<Sound> getPlaylistSounds(@PathVariable Long playlist_id) {
