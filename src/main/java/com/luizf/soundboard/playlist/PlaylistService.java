@@ -36,7 +36,10 @@ public class PlaylistService {
         }).orElseThrow( ()  -> new PlaylistNotFound("Playlist with id " +playlist.getId()+ " not found"));
     }
 
+    @Transactional
     public void delete(Playlist playlist) {
+        playlistRepository.deleteUserPlaylistByPlaylistId(playlist.getId());
+        playlistRepository.deletePlaylistSoundbyPlaylistId(playlist.getId());
         playlistRepository.delete(playlist);
     }
 }

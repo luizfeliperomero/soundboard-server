@@ -41,12 +41,12 @@ public class SoundController {
        return soundService.getPlaylistSounds(playlist_id);
    }
 
-   @DeleteMapping("/delete")
+   @PostMapping("/delete")
    public void delete(@RequestBody Sound sound) {
        soundService.delete(sound);
    }
 
-   @PutMapping("/update")
+   @PostMapping("/update")
    public ResponseEntity update(@RequestBody Sound sound) {
         return ResponseEntity.ok(soundService.update(sound));
    }

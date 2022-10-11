@@ -20,4 +20,12 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
             "JOIN playlist\n" +
             "ON playlist.playlist_id = up.playlist_id where user_id = :user_id", nativeQuery=true)
     List<Playlist> getUserPlaylists(@Param("user_id") Long user_id);
+
+    @Modifying
+    @Query(value = "DELETE FROM user_playlist WHERE playlist_id = :playlistId", nativeQuery = true)
+    void deleteUserPlaylistByPlaylistId(@Param("playlistId") Long playlistId);
+
+    @Modifying
+    @Query(value = "DELETE FROM playlist_sound WHERE playlist_id = :playlistId", nativeQuery = true)
+    void deletePlaylistSoundbyPlaylistId(@Param("playlistId") Long playlistId);
 }

@@ -39,7 +39,10 @@ public class SoundService {
             sound.setName(file.getOriginalFilename().split("\\.")[0]);
             String hashName = bytesToSha1(file.getBytes());
             sound.setUrl("http://192.168.1.101:8080/api/v1/sound/getAudio/" +hashName);
-            file.transferTo(new File(soundsPath + File.separator + hashName));
+            if(!new File(soundsPath + File.separator + hashName).isFile()) {
+                System.out.println("UPLOADED");
+                file.transferTo(new File(soundsPath + File.separator + hashName));
+            }
             Sound s = soundRepository.save(sound);
             soundRepository.savePlaylistSound(playlist_id, sound.getId());
             return s;
@@ -58,7 +61,9 @@ public class SoundService {
         }).orElseThrow( ()  -> new SoundNotFound("Playlist with id " +sound.getId()+ " not found"));
     }
 
+    @Transactional
     public void delete(Sound sound) {
+        soundRepository.deletePlaylistSoundBySoundId(sound.getId());
        soundRepository.delete(sound);
     }
 
