@@ -17,7 +17,7 @@ public interface SoundRepository extends JpaRepository<Sound, Long> {
     )
     void savePlaylistSound(@Param("playlistId") Long playlistId, @Param("soundId") Long soundId);
 
-    @Query(value = "SELECT sound.sound_id, name_, url FROM playlist_sound as ps\n" +
+    @Query(value = "SELECT sound.sound_id, name_, url, code FROM playlist_sound as ps\n" +
             "JOIN sound\n" +
             "ON sound.sound_id = ps.sound_id where playlist_id = :playlistId", nativeQuery=true)
     List<Sound> getPlaylistSounds(@Param("playlistId") Long playlistId);

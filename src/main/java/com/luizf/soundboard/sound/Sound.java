@@ -16,4 +16,5 @@ public class Sound {
     @Column(name = "name_")
     private String name;
     private String url;
+    private String code;
 }

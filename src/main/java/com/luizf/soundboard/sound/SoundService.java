@@ -12,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -31,20 +33,20 @@ public class SoundService {
 
 
     @Transactional
-    public Sound uploadFile(MultipartFile file, Long playlist_id) {
-        //String soundsPath = "src" + File.separator + "main" + File.separator +  "resources" + File.separator + "sounds";
+    public Sound uploadFile(MultipartFile file, Long playlistId, Long userId) {
+        String soundsPath = System.getProperty("user.dir") + File.separator + "src" + File.separator + "main" + File.separator +  "resources" + File.separator + "sounds";
+        //String soundsPath = "E:\\Projects\\soundboard-server\\src\\main\\resources\\sounds";
         Sound sound = new Sound();
-        String soundsPath = "E:\\Projects\\soundboard-server\\src\\main\\resources\\sounds";
         try {
             sound.setName(file.getOriginalFilename().split("\\.")[0]);
             String hashName = bytesToSha1(file.getBytes());
-            sound.setUrl("http://192.168.1.101:8080/api/v1/sound/getAudio/" +hashName);
+            sound.setCode(hashName + userId);
+            sound.setUrl("http://192.168.1.101:8080/api/v1/sound/getAudio/" + sound.getCode());
             if(!new File(soundsPath + File.separator + hashName).isFile()) {
-                System.out.println("UPLOADED");
-                file.transferTo(new File(soundsPath + File.separator + hashName));
+                file.transferTo(new File(soundsPath + File.separator + sound.getCode()));
             }
             Sound s = soundRepository.save(sound);
-            soundRepository.savePlaylistSound(playlist_id, sound.getId());
+            soundRepository.savePlaylistSound(playlistId, sound.getId());
             return s;
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -63,8 +65,13 @@ public class SoundService {
 
     @Transactional
     public void delete(Sound sound) {
-        soundRepository.deletePlaylistSoundBySoundId(sound.getId());
-       soundRepository.delete(sound);
+        try {
+            Files.deleteIfExists(Paths.get("E:\\Projects\\soundboard-server\\src\\main\\resources\\sounds\\" + sound.getCode()));
+            soundRepository.deletePlaylistSoundBySoundId(sound.getId());
+            soundRepository.delete(sound);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String bytesToSha1(byte[] bytes) throws NoSuchAlgorithmException {

@@ -23,17 +23,17 @@ public class SoundController {
     }
 
 
-   @GetMapping("/getAudio/{name}")
-   public byte[] getAudio(@PathVariable String name) throws IOException {
+   @GetMapping("/getAudio/{code}")
+   public byte[] getAudio(@PathVariable String code) throws IOException {
         String soundsPath = "src" + File.separator + "main" + File.separator +  "resources" + File.separator + "sounds";
-        String path = soundsPath + File.separator + name;
+        String path = soundsPath + File.separator + code;
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         return bytes;
    }
 
     @PostMapping("/uploadFile")
-    public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file, @RequestParam String playlist_id ) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(soundService.uploadFile(file, Long.parseLong(playlist_id)));
+    public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file, @RequestParam String playlist_id, @RequestParam String user_id) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(soundService.uploadFile(file, Long.parseLong(playlist_id), Long.parseLong(user_id)));
     }
 
    @GetMapping("/getSounds/{playlist_id}")
