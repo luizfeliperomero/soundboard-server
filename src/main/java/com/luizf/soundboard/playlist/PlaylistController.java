@@ -34,4 +34,9 @@ public class PlaylistController {
         playlistService.delete(playlist);
     }
 
+    @GetMapping("/getPlaylistsWhereSoundNotExists/{soundId}")
+    public ResponseEntity<Playlist[]> getPlaylistsWhereSoundNotExists(@PathVariable Long soundId) {
+       return ResponseEntity.ok(playlistService.getPlaylistsWhereSoundNotExists(soundId));
+    }
+
 }

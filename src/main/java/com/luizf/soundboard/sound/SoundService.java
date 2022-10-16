@@ -48,7 +48,7 @@ public class SoundService {
             Sound s = soundRepository.save(sound);
             soundRepository.savePlaylistSound(playlistId, sound.getId());
             return s;
-        } catch (IOException e) {
+        } catch (IOException e ) {
             throw new RuntimeException(e);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
@@ -61,6 +61,11 @@ public class SoundService {
             s.setName(sound.getName());
             return soundRepository.save(s);
         }).orElseThrow( ()  -> new SoundNotFound("Playlist with id " +sound.getId()+ " not found"));
+    }
+
+    @Transactional
+    public void savePlaylistSound(Long playlistId, Long soundId) {
+        soundRepository.savePlaylistSound(playlistId, soundId);
     }
 
     @Transactional

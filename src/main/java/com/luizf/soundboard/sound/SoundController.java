@@ -51,4 +51,9 @@ public class SoundController {
         return ResponseEntity.ok(soundService.update(sound));
    }
 
+   @GetMapping("/savePlaylistSound/{playlistId}/{soundId}")
+   public void savePlaylistSound(@PathVariable Long playlistId, @PathVariable Long soundId) {
+        soundService.savePlaylistSound(playlistId, soundId);
+   }
+
 }
