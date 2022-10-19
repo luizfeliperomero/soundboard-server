@@ -22,7 +22,11 @@ public interface SoundRepository extends JpaRepository<Sound, Long> {
             "ON sound.sound_id = ps.sound_id where playlist_id = :playlistId", nativeQuery=true)
     List<Sound> getPlaylistSounds(@Param("playlistId") Long playlistId);
 
+    @Query(value = "SELECT sound_id from playlist_sound where sound_id = :soundId", nativeQuery = true)
+    List<Long> getPlaylistSoundIds(@Param("soundId") Long soundId);
+
+
     @Modifying
-    @Query(value = "DELETE FROM playlist_sound WHERE sound_id = :soundId", nativeQuery = true)
-    void deletePlaylistSoundBySoundId(@Param("soundId") Long soundId );
+    @Query(value = "DELETE FROM playlist_sound WHERE sound_id = :soundId and playlist_id = :playlistId", nativeQuery = true)
+    void deletePlaylistSoundBySoundId(@Param("soundId") Long soundId, @Param("playlistId") Long playlistId );
 }

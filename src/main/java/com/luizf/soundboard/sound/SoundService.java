@@ -3,6 +3,7 @@ package com.luizf.soundboard.sound;
 import com.luizf.soundboard.exception.playlist_exceptions.PlaylistNotFound;
 import com.luizf.soundboard.exception.sound_exceptions.SoundNotFound;
 import com.luizf.soundboard.playlist.Playlist;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -21,6 +22,7 @@ import java.util.Optional;
 
 @Service
 public class SoundService {
+    private String soundsPath = System.getProperty("user.dir") + File.separator + "src" + File.separator + "main" + File.separator +  "resources" + File.separator + "sounds";
     private final SoundRepository soundRepository;
 
     public SoundService(SoundRepository soundRepository) {
@@ -34,8 +36,6 @@ public class SoundService {
 
     @Transactional
     public Sound uploadFile(MultipartFile file, Long playlistId, Long userId) {
-        String soundsPath = System.getProperty("user.dir") + File.separator + "src" + File.separator + "main" + File.separator +  "resources" + File.separator + "sounds";
-        //String soundsPath = "E:\\Projects\\soundboard-server\\src\\main\\resources\\sounds";
         Sound sound = new Sound();
         try {
             sound.setName(file.getOriginalFilename().split("\\.")[0]);
@@ -68,12 +68,21 @@ public class SoundService {
         soundRepository.savePlaylistSound(playlistId, soundId);
     }
 
+    public boolean multiplePlaylists(Long soundId) {
+       if(soundRepository.getPlaylistSoundIds(soundId).size() > 1) {
+          return true;
+       }
+       return false;
+    }
+
     @Transactional
-    public void delete(Sound sound) {
+    public void delete(Sound sound, Long playlistId) {
         try {
-            Files.deleteIfExists(Paths.get("E:\\Projects\\soundboard-server\\src\\main\\resources\\sounds\\" + sound.getCode()));
-            soundRepository.deletePlaylistSoundBySoundId(sound.getId());
-            soundRepository.delete(sound);
+            if(!multiplePlaylists(sound.getId())) {
+                Files.deleteIfExists(Paths.get(soundsPath + sound.getCode()));
+                soundRepository.delete(sound);
+            }
+            soundRepository.deletePlaylistSoundBySoundId(sound.getId(), playlistId);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

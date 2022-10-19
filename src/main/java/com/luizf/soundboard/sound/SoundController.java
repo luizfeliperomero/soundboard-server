@@ -13,8 +13,8 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/api/v1/sound")
+@CrossOrigin("*")
 public class SoundController {
     private final SoundService soundService;
 
@@ -41,9 +41,9 @@ public class SoundController {
        return soundService.getPlaylistSounds(playlist_id);
    }
 
-   @PostMapping("/delete")
-   public void delete(@RequestBody Sound sound) {
-       soundService.delete(sound);
+   @PostMapping("/delete/{playlistId}")
+   public void delete(@RequestBody Sound sound, @PathVariable Long playlistId) {
+       soundService.delete(sound, playlistId);
    }
 
    @PostMapping("/update")

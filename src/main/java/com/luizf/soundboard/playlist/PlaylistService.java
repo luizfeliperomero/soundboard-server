@@ -1,7 +1,6 @@
 package com.luizf.soundboard.playlist;
 
 import com.luizf.soundboard.exception.playlist_exceptions.PlaylistNotFound;
-import com.luizf.soundboard.user.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
