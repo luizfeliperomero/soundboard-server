@@ -17,4 +17,6 @@ public class User {
    private String username;
    @Column(name = "password_")
    private String password;
+   @Column(name = "plan_id")
+   private Long planId;
 }

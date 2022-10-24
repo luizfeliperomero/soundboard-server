@@ -1,6 +1,9 @@
 package com.luizf.soundboard.exception;
 
+import com.luizf.soundboard.exception.plan_exceptions.PlanNotFound;
+import com.luizf.soundboard.exception.playlist_exceptions.MaxPlaylists;
 import com.luizf.soundboard.exception.playlist_exceptions.PlaylistNotFound;
+import com.luizf.soundboard.exception.sound_exceptions.MaxUploadsReached;
 import com.luizf.soundboard.exception.sound_exceptions.SoundNotFound;
 import com.luizf.soundboard.exception.user_exceptions.UserUnauthorized;
 import com.luizf.soundboard.exception.user_exceptions.UserNotFound;
@@ -41,4 +44,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> soundNotFound(PlaylistNotFound ex) {
         return new ResponseEntity<>(new ApiError(HttpStatus.NOT_FOUND, ex.getMessage(), LocalDateTime.now()), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler({MaxPlaylists.class})
+    public ResponseEntity<Object> maxPlaylistsReached(MaxPlaylists ex) {
+        return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, ex.getMessage(), LocalDateTime.now()), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler({PlanNotFound.class})
+    public ResponseEntity<Object> planNotFound(PlanNotFound ex) {
+        return new ResponseEntity<>(new ApiError(HttpStatus.NOT_FOUND, ex.getMessage(), LocalDateTime.now()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({MaxUploadsReached.class})
+    public ResponseEntity<Object> maxUploadsReached(MaxUploadsReached ex) {
+        return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, ex.getMessage(), LocalDateTime.now()), HttpStatus.UNAUTHORIZED);
+    }
+
 }

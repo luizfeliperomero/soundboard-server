@@ -29,4 +29,10 @@ public interface SoundRepository extends JpaRepository<Sound, Long> {
     @Modifying
     @Query(value = "DELETE FROM playlist_sound WHERE sound_id = :soundId and playlist_id = :playlistId", nativeQuery = true)
     void deletePlaylistSoundBySoundId(@Param("soundId") Long soundId, @Param("playlistId") Long playlistId );
+
+    @Query(value = "select count(*) from\n" +
+            "(select * from user_playlist where user_id = :userId) as up\n" +
+            "join playlist_sound\n" +
+            "on playlist_sound.playlist_id = up.playlist_id", nativeQuery = true)
+    Long userSoundsNumber(@Param("userId") Long userId);
 }

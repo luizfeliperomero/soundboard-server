@@ -1,6 +1,12 @@
 package com.luizf.soundboard.playlist;
 
+import com.luizf.soundboard.exception.playlist_exceptions.MaxPlaylists;
 import com.luizf.soundboard.exception.playlist_exceptions.PlaylistNotFound;
+import com.luizf.soundboard.exception.user_exceptions.UserNotFound;
+import com.luizf.soundboard.plan.Plan;
+import com.luizf.soundboard.plan.PlanRepository;
+import com.luizf.soundboard.user.User;
+import com.luizf.soundboard.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,17 +16,25 @@ import java.util.Optional;
 @Service
 public class PlaylistService {
     private final PlaylistRepository playlistRepository;
+    private final PlanRepository planRepository;
+    private final UserRepository userRepository;
 
-    public PlaylistService(PlaylistRepository playlistRepository) {
+    public PlaylistService(PlaylistRepository playlistRepository, PlanRepository planRepository, UserRepository userRepository) {
         this.playlistRepository = playlistRepository;
+        this.planRepository = planRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional
     public Playlist save(Playlist playlist, Long user_id) {
-      Playlist p = playlistRepository.save(playlist);
-      playlistRepository.saveUserPlaylist(playlist.getId(), user_id);
-
-      return p;
+      User user = userRepository.findById(user_id).orElseThrow(() -> new UserNotFound("User not found"));
+      Plan userPlan = planRepository.getReferenceById(user.getPlanId());
+      if(findUserPlaylists(user.getId()).size() < userPlan.getMax_playlists()) {
+          Playlist p = playlistRepository.save(playlist);
+          playlistRepository.saveUserPlaylist(playlist.getId(), user.getId());
+          return p;
+      }
+      throw new MaxPlaylists("Can't save playlist because maximum number of " + userPlan.getMax_playlists() + " playlists was reached");
     }
     public List<Playlist> findUserPlaylists(Long user_id) {
        return playlistRepository.getUserPlaylists(user_id);
