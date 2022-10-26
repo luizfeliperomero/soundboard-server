@@ -90,7 +90,7 @@ public class SoundService {
     public void delete(Sound sound, Long playlistId) {
         try {
             if(!multiplePlaylists(sound.getId())) {
-                Files.deleteIfExists(Paths.get("E:\\Projects\\soundboard-server\\src\\main\\resources\\sounds\\" + sound.getCode()));
+                Files.deleteIfExists(Paths.get("src" + File.separator + "main" + File.separator + "resources"+ File.separator + "sounds" + File.separator + sound.getCode()));
                 soundRepository.delete(sound);
             }
             soundRepository.deletePlaylistSoundBySoundId(sound.getId(), playlistId);

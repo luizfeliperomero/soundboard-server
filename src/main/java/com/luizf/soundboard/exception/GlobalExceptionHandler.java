@@ -7,6 +7,7 @@ import com.luizf.soundboard.exception.sound_exceptions.MaxUploadsReached;
 import com.luizf.soundboard.exception.sound_exceptions.SoundNotFound;
 import com.luizf.soundboard.exception.user_exceptions.UserUnauthorized;
 import com.luizf.soundboard.exception.user_exceptions.UserNotFound;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,5 +60,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> maxUploadsReached(MaxUploadsReached ex) {
         return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, ex.getMessage(), LocalDateTime.now()), HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler({ExpiredJwtException.class})
+    public ResponseEntity<Object> jwtExpired() {
+        return new ResponseEntity<>(new ApiError(HttpStatus.UNAUTHORIZED, "Jwt is expired", LocalDateTime.now()), HttpStatus.UNAUTHORIZED);
+    }
+
 
 }
