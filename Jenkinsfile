@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Publish') {
           steps {
-             bat 'cd /src/main/java/com/luizf/soundboard/'
+             bat'dir'
              bat './mvn package'
              bat'dir'
           }
