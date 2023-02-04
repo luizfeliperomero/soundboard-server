@@ -7,7 +7,7 @@ pipeline {
         stage('Publish') {
           steps {
              bat'dir'
-             bat './mvn package'
+             bat 'mvn package'
              bat'dir'
           }
         }
