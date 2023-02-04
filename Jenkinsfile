@@ -6,12 +6,8 @@ pipeline {
     stages {
         stage('Publish') {
           steps {
-              sh './mvn package'
-          }
-          post {
-            success {
-              archiveArtifacts 'target/*.jar'
-            }
+             sh './mvn package'
+             sh 'dir'
           }
         }
     }
