@@ -5,11 +5,14 @@ pipeline {
     }
     stages {
         stage('Publish') {
-          steps {
-             bat'dir'
-             bat 'mvn package -Dmaven.test.skip'
-             bat'dir'
+           steps {
+             bat 'mvn package -Dmaven.test.skip'            
           }
+            post {
+                success {
+                    archiveArtifacts 'target/*.jar'
+                }
+            }
         }
     }
 }
