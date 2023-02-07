@@ -17,5 +17,7 @@ pipeline {
                     targetLocation: "C:\\Desktop"
              )])
              }
+             }
           }
         }
+    }
