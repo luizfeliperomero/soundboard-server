@@ -16,10 +16,6 @@ pipeline {
                      includes: 'target/*.jar',
                     targetLocation: "C:\\Desktop"
              )])
-      }
-}
-           
-            }
+             }
+          }
         }
-    }
-}
