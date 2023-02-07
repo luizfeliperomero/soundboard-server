@@ -8,10 +8,17 @@ pipeline {
            steps {
              bat 'mvn package -Dmaven.test.skip'            
           }
-            post {
-                success {
-                    archiveArtifacts 'target/*.jar'
-                }
+          stage("Copy"){
+             steps {
+                 fileOperations([fileCopyOperation(
+                    excludes: '',
+                    flattenFiles: false,
+                     includes: 'target/*.jar',
+                    targetLocation: "C:\\Desktop"
+             )])
+      }
+}
+           
             }
         }
     }
