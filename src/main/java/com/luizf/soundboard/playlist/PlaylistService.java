@@ -1,5 +1,6 @@
 package com.luizf.soundboard.playlist;
 
+import com.luizf.soundboard.exception.plan_exceptions.PlanNotFound;
 import com.luizf.soundboard.exception.playlist_exceptions.MaxPlaylists;
 import com.luizf.soundboard.exception.playlist_exceptions.PlaylistNotFound;
 import com.luizf.soundboard.exception.user_exceptions.UserNotFound;
@@ -28,7 +29,7 @@ public class PlaylistService {
     @Transactional
     public Playlist save(Playlist playlist, Long user_id) {
       User user = userRepository.findById(user_id).orElseThrow(() -> new UserNotFound("User not found"));
-      Plan userPlan = planRepository.getReferenceById(user.getPlanId());
+      Plan userPlan = planRepository.findById(user.getPlanId()).orElseThrow(() -> new PlanNotFound("Plan not found"));
       if(findUserPlaylists(user.getId()).size() < userPlan.getMax_playlists()) {
           Playlist p = playlistRepository.save(playlist);
           playlistRepository.saveUserPlaylist(playlist.getId(), user.getId());
