@@ -24,12 +24,12 @@ public class PlaylistController {
         return ResponseEntity.ok(playlistService.findUserPlaylists(user_id));
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity update(@RequestBody Playlist playlist) {
        return ResponseEntity.ok(playlistService.update(playlist));
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public void delete(@RequestBody Playlist playlist) {
         playlistService.delete(playlist);
     }
