@@ -5,7 +5,11 @@ import com.luizf.soundboard.exception.user_exceptions.UserNotFound;
 import com.luizf.soundboard.plan.Plan;
 import com.luizf.soundboard.plan.PlanRepository;
 import com.luizf.soundboard.util.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +21,14 @@ public class UserService {
    private final PlanRepository planRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-    private final AuthenticationManager authenticationManager;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-   public UserService(UserRepository userRepository, PlanRepository planRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, AuthenticationManager authenticationManager) {
+   public UserService(UserRepository userRepository, PlanRepository planRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
        this.planRepository = planRepository;
        this.passwordEncoder = passwordEncoder;
        this.jwtUtil = jwtUtil;
-       this.authenticationManager = authenticationManager;
    }
 
    public User save(User user) {
@@ -43,9 +47,11 @@ public class UserService {
 
    public AuthResponse authenticate(User user) {
        User u =  findByUsername(user.getUsername()).orElseThrow(() -> new UserNotFound("User not found"));
-       if(passwordEncoder.matches(user.getPassword(), u.getPassword())){
+       final Authentication authentication = this.authenticationManager
+               .authenticate(new UsernamePasswordAuthenticationToken(u.getUsername(), u.getPassword()));
+       if(authentication.isAuthenticated()){
+           SecurityContextHolder.getContext().setAuthentication(authentication);
            return new AuthResponse(u, jwtUtil.generateToken(user.getUsername()));
        } else throw new UserUnauthorized("Wrong Password");
    }
-
 }
